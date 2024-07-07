@@ -63,3 +63,5 @@ six==1.16.0
 cython==3.0.10
 pyproj==3.6.1
 geopandas==1.0.1
+python-magic==0.4.27
+geoalchemy2==0.15.1
