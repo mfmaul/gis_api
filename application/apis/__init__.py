@@ -5,7 +5,8 @@ swagger_apis_blueprint = Blueprint('swagger_apis', __name__)
 
 # restx
 from flask_restx import Api
-from .user_apis import api as docs_account
+from .user_apis import api as docs_user
+from .gis_apis import api as docs_gis
 
 authorizations = {
     'api_key': {
@@ -25,4 +26,5 @@ api_extension = Api(
     security='api_key',
 )
 
-api_extension.add_namespace(docs_account)
+api_extension.add_namespace(docs_user)
+api_extension.add_namespace(docs_gis)
