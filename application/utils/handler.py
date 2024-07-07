@@ -23,9 +23,7 @@ def exception_handler(e, res_code=500, default_data={}, message='something went 
     # print('err: ', type(e).__name__)
     eprint('{}: {}'.format(services, str(e)))
 
-    context = {
-        'status': { }
-    }
+    context = { }
 
     message = str(e)
 
@@ -42,8 +40,8 @@ def exception_handler(e, res_code=500, default_data={}, message='something went 
         else:
             message = '-- prod redacted, please contact admin --'
 
-    context['status']['message'] = message
-    context['status']['success'] = False
+    context['message'] = message
+    context['success'] = False
 
     gc.collect()
 
