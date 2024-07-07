@@ -28,6 +28,8 @@ class Account(UserMixin, db.Model):
     api_key = db.Column(db.String(255), unique=True, nullable=True)
     api_key_expires = db.Column(db.DateTime, default=get_date)
 
+    register_key = db.Column(db.String(255), nullable=True, index=True)
+
     rowstatus = db.Column(db.Integer, default=1)
     created_by = db.Column(db.String(100), nullable=True)
     created_date = db.Column(db.DateTime, default=get_date)
