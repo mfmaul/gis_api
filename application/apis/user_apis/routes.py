@@ -36,6 +36,84 @@ def load_user_from_request(request):
                 return user
     return None
 
+@user_apis_blueprint.route('/register', methods=['POST'])
+@cross_origin()
+def register():
+    try:
+        if not request.is_json:
+            raise AppMessageException('please provide json data')
+        data = request.get_json()
+
+        first_name = data.get('first_name')
+        last_name = data.get('last_name')
+        email = data.get('email')
+        password = data.get('password')
+
+        if not first_name:
+            raise AppMessageException('please input: first_name (text mandatory)')
+        if not email:
+            raise AppMessageException('please input: email (text mandatory)')
+        if '@' not in email:
+            raise AppMessageException('invalid input format: email')
+        
+        username = email.split('@')[0]
+        password = sha256_crypt.hash(str(password))
+
+        known_account = Account.query.filter_by(email=email).first()
+        if known_account:
+            raise AppMessageException('email has been registered')
+        
+        known_account = Account.query.filter(Account.username.op('~')('^{}[0-9][0-9]*[0-9]*[0-9]*$'.format(username)))
+        total_account = known_account.count()
+        if known_account:
+            username = '{}{}'.format(username, total_account+1)
+        
+        known_account = Account()
+        known_account.uid = str(uuid.uuid4())
+        
+        known_account.first_name = first_name
+        known_account.last_name = last_name
+        known_account.email = email
+
+        known_account.username = username
+        known_account.password = password
+
+        known_account.register_key = str(uuid.uuid4())
+
+        known_account.rowstatus = 1
+        known_account.created_by = known_account.uid
+        known_account.created_date = get_date()
+
+        db.session.add(known_account)
+        db.session.commit()
+
+        # send mail
+        
+        return make_response(jsonify(success_handler( known_account.to_json(attr=['uid', 'username']) )), 200)
+    except Exception as e:
+        return make_response(jsonify(exception_handler(e, services='register')), 500)
+
+@user_apis_blueprint.route('/verify/<register_key>', methods=['GET'])
+@cross_origin()
+def verify(register_key:str):
+    try:
+        register_key = str(register_key)
+        
+        known_account = Account.query.filter_by(register_key=register_key).first()
+        if not known_account:
+            raise AppMessageException('invalid register key!')
+        if known_account.is_verified:
+            raise AppMessageException('already verified! login available.')
+        
+        known_account.is_verified = 1
+
+        db.session.add(known_account)
+        db.session.commit()
+
+        return make_response(jsonify(success_handler('account verified. login available.')), 200)
+    except Exception as e:
+        return make_response(jsonify(exception_handler(e, services='verify')), 500)
+
 @user_apis_blueprint.route('/login', methods=['POST'])
 @cross_origin()
 def post_login():
