@@ -30,4 +30,10 @@ def create_app():
         from .apis.gis_apis import gis_apis_blueprint
         app.register_blueprint(gis_apis_blueprint, url_prefix='/giss')
 
+        # so tricky, if this placed before the first 'users' api,
+        # the prefix /users will be overriden by this one
+        # so it will return null if we call /users/something
+        from .apis import swagger_apis_blueprint
+        app.register_blueprint(swagger_apis_blueprint, url_prefix='/')
+
         return app
