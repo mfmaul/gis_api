@@ -99,7 +99,12 @@ def post_area_polygon():
         
         data = request.get_json()
         if not type(data) == list:
-            raise AppMessageException('json data should be list of list, sample: [[[], [], []]]')
+            raise AppMessageException('json data should be list of list, sample: [[[[], [], []]]]')
+        try:
+            # test multipolygon input
+            data[0][0][0][0]
+        except:
+            raise AppMessageException('invalid multipolygon format, currently we accepts [[[[1, 1], [2, 2]]]] formats')
         
         polygon = MultiPolygon(data)
         sgri2013_degree = pyproj.CRS('EPSG:9470')
