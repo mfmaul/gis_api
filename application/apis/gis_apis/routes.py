@@ -217,6 +217,9 @@ def get_intersections(t:str = None):
 
 def gdf_sanitize(gdf):
 
+    # drop null data
+    gdf.dropna(subset=['objectid'], inplace=True)
+
     # drop geom data
     gdf = gdf.drop('geom', axis=1)
 
