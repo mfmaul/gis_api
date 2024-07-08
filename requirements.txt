@@ -65,3 +65,4 @@ pyproj==3.6.1
 geopandas==1.0.1
 python-magic==0.4.27
 geoalchemy2==0.15.1
+psycopg2-binary==2.9.9
