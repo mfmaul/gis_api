@@ -89,7 +89,7 @@ def register():
 
         # send mail
         
-        return make_response(jsonify(success_handler( known_account.to_json(attr=['uid', 'username']) )), 200)
+        return make_response(jsonify(success_handler( known_account.to_json(attr=['uid', 'username', 'register_key']) )), 200)
     except Exception as e:
         return make_response(jsonify(exception_handler(e, services='register')), 500)
 
