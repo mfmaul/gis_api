@@ -98,6 +98,7 @@ def post_area_polygon():
             raise AppMessageException('please provide json data')
         
         data = request.get_json()
+        data = data.get('polygon')
         if not type(data) == list:
             raise AppMessageException('json data should be list of list, sample: [[[[], [], []]]]')
         try:
