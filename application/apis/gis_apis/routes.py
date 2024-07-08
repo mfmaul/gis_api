@@ -16,7 +16,6 @@ import time
 import arrow
 import geopandas
 import pyproj
-import magic
 
 from shapely import Polygon, MultiPolygon
 from shapely.ops import transform
