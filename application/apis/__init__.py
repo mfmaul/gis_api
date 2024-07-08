@@ -24,6 +24,7 @@ api_extension = Api(
     version='22.0',
     doc='/',
     security='api_key',
+    description='flow: users register -> verify -> login to get the api key'
 )
 
 api_extension.add_namespace(docs_user)
