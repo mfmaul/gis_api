@@ -21,7 +21,7 @@ from shapely import Polygon, MultiPolygon
 from shapely.ops import transform
 
 from ...utils import AppMessageException, get_date, set_attr, get_default_list_param, exception_handler, success_handler
-from ...utils import eprint, sanitize_psycopg2_query
+from ...utils import eprint
 
 con = db.get_engine(bind='postgis')
 
@@ -178,16 +178,14 @@ def getdata(t:str = 'city', args:str = '\0'):
     '''
 
     if t == 'city':
-        query += ''' and lower(a.wadmkk) like '%{}%' '''
+        query += ''' and lower(a.wadmkk) like %(args)s '''
     elif t == 'district':
-        query += ''' and lower(a.wadmkc) like '%{}%' '''
+        query += ''' and lower(a.wadmkc) like %(args)s '''
     else:
         return False, None
     
-    query = sanitize_psycopg2_query(query.format(args))
-
     # https://epsg.io/9470 | indonesia SGRI2013 in degree | latest revision?
-    gdf = geopandas.read_postgis(query, con, crs='epsg:9470')
+    gdf = geopandas.read_postgis(query, con, crs='epsg:9470', params={'args': '%{}%'.format(args)})
     gdf = gdf.to_crs(epsg=9468) # SGRI2013 in metre
 
     # set the area units

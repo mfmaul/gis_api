@@ -87,7 +87,3 @@ def get_default_list_param(args):
         'filter_by_col': filter_by_col[:1000],
         'filter_by_text': filter_by_text[:1000],
     }
-
-def sanitize_psycopg2_query(s:str):
-    # https://github.com/sqlalchemy/sqlalchemy/discussions/10222
-    return str(s).replace('%', '%%')
